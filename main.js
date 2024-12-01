@@ -10,13 +10,17 @@ const global = {
 };
 
 async function main() {
-  const curr = { 1: global.root + "/2024/01.js" };
+  const curr = {
+    1: global.root + "/2024/01.js", //
+    2: global.root + "/2024/02.js",
+  };
+  const currentDefaultTest = 2;
 
   readline.on("line", async (input) => {
     try {
       const possibleNumber = parseInt(input);
       if (input === "") {
-        eval(fs.readFileSync(curr[1]).toString());
+        eval(fs.readFileSync(curr[currentDefaultTest]).toString());
       } else if (
         !isNaN(possibleNumber) &&
         possibleNumber >= 0 &&
