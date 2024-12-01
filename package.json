@@ -1,0 +1,22 @@
+{
+  "name": "advent_of_code_2024",
+  "version": "1.0.0",
+  "description": "For solving advent of code",
+  "main": "main.js",
+  "scripts": {
+    "start": "nodemon main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/mygosity/advent_of_code_2024.git"
+  },
+  "author": "mygosity",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mygosity/advent_of_code_2024/issues"
+  },
+  "homepage": "https://github.com/mygosity/advent_of_code_2024#readme",
+  "dependencies": {
+    "nodemon": "^3.1.7"
+  }
+}
