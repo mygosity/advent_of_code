@@ -15,6 +15,7 @@ async function main() {
     2: global.root + "/2024/02.js",
   };
   const currentDefaultTest = 2;
+  eval(fs.readFileSync(curr[currentDefaultTest]).toString());
 
   readline.on("line", async (input) => {
     try {
