@@ -13,17 +13,17 @@ const getStringFromFilePath = (filePath) => {
   return fs.readFileSync(filePath).toString();
 };
 
-const getTargetPath = (input) => {
-  return global.root + `/2024/${input.toString().padStart(2, "0")}.js`;
+const getTargetPath = (year, input) => {
+  return global.root + `/${year}/${input.toString().padStart(2, "0")}.js`;
 };
 
 const evaluatePuzzle = (puzzleNumber) => {
-  eval(getStringFromFilePath(getTargetPath(puzzleNumber)));
+  eval(getStringFromFilePath(getTargetPath("2024", puzzleNumber)));
 };
 
 async function main() {
   const currentDefaultTest = 3;
-  eval(getStringFromFilePath(getTargetPath(currentDefaultTest)));
+  evaluatePuzzle(currentDefaultTest);
 
   readline.on("line", async (input) => {
     try {
