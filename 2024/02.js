@@ -2,20 +2,16 @@ const currPath = global.root + "/2024/";
 console.log(`loaded 2024/02.js`, { global, currPath });
 
 function isSafe(nums) {
-  let diff = nums[1] - nums[0];
-  if (Math.abs(diff) > 3 || diff === 0) {
-    return false;
-  }
-  for (let i = 2; i < nums.length; ++i) {
-    const nextDiff = nums[i] - nums[i - 1];
-    if (
-      (nextDiff > 0 && diff < 0) ||
-      (diff > 0 && nextDiff < 0) ||
-      nextDiff === 0
-    ) {
+  let prevDiff = null;
+  for (let i = 1; i < nums.length; ++i) {
+    const diff = nums[i] - nums[i - 1];
+    if (Math.abs(diff) > 3 || diff === 0) {
       return false;
     }
-    if (Math.abs(nextDiff) > 3) return false;
+    if (prevDiff != null && prevDiff * diff < 0) {
+      return false;
+    }
+    prevDiff = diff;
   }
   return true;
 }
@@ -30,30 +26,30 @@ async function solveAdventPuzzle02() {
   });
 
   let safe = 0;
-  const specialList = [];
 
-  for (const line of parseAble) {
+  searching: for (const line of parseAble) {
     const nums = line.split(" ").map((x) => Number(x));
     // The levels are either all increasing or all decreasing.
     // Any two adjacent levels differ by at least one and at most three.
     // console.log({ nums });
+
+    //20 19 21 22 23 24
+    //21 27 23 22 21 20
     if (isSafe(nums)) {
       safe++;
     } else {
-      specialList.push(nums);
-    }
-  }
-
-  for (const nums of specialList) {
-    for (let i = 0; i < nums.length; ++i) {
-      const next = [...nums];
-      next.splice(i, 1);
-      if (isSafe(next)) {
-        safe++;
-        break;
+      //part 2: if we can remove one to make it safe, count it
+      for (let i = 0; i < nums.length; ++i) {
+        const nextTest = [...nums];
+        nextTest.splice(i, 1);
+        if (isSafe(nextTest)) {
+          safe++;
+          continue searching;
+        }
       }
     }
   }
-  console.log({ safe, len: specialList.length });
+  //answers are 252 and 324
+  console.log({ safe });
 }
 solveAdventPuzzle02();
