@@ -9,25 +9,29 @@ const global = {
   root: require("path").resolve(__dirname, "./"),
 };
 
+const getStringFromFilePath = (filePath) => {
+  return fs.readFileSync(filePath).toString();
+};
+
+const getTargetPath = (input) => {
+  return global.root + `/2024/${input.toString().padStart(2, "0")}.js`;
+};
+
+const evaluatePuzzle = (puzzleNumber) => {
+  eval(getStringFromFilePath(getTargetPath(puzzleNumber)));
+};
+
 async function main() {
-  const curr = {
-    1: global.root + "/2024/01.js", //
-    2: global.root + "/2024/02.js",
-  };
-  const currentDefaultTest = 2;
-  eval(fs.readFileSync(curr[currentDefaultTest]).toString());
+  const currentDefaultTest = 3;
+  eval(getStringFromFilePath(getTargetPath(currentDefaultTest)));
 
   readline.on("line", async (input) => {
     try {
       const possibleNumber = parseInt(input);
       if (input === "") {
-        eval(fs.readFileSync(curr[currentDefaultTest]).toString());
-      } else if (
-        !isNaN(possibleNumber) &&
-        possibleNumber >= 0 &&
-        curr[possibleNumber]
-      ) {
-        eval(fs.readFileSync(curr[possibleNumber]).toString());
+        evaluatePuzzle(currentDefaultTest);
+      } else if (!isNaN(possibleNumber) && possibleNumber >= 0) {
+        evaluatePuzzle(possibleNumber);
       } else {
         eval(input);
       }
