@@ -81,7 +81,7 @@ async function solveAdventPuzzle03() {
 solveAdventPuzzle03();
 
 function solveBetter(data) {
-  const regexpMatchMult = /mul\(\d{1,3},\d{1,3}\)*/g;
+  const regexpMatchMult = /mul\(\d{1,3},\d{1,3}\)/g;
   // const matches = data.match(regexpMatchMult);
 
   const matchList = [];
@@ -117,17 +117,18 @@ function solveBetter(data) {
       doIndex++;
       shouldAddTotal = doOrNotList[doIndex]?.[1] === true;
     }
-    if (true || shouldAddTotal) {
-      const [_, right] = match.split("(");
+    if (shouldAddTotal) {
+      const [_, right] = match.split("mul(");
       const [numbers, __] = right.split(")");
       const [x, y] = numbers.split(",");
+      console.log({ match, x, y });
       total += parseInt(x) * parseInt(y);
       comparisonList.push([parseInt(x), parseInt(y)]);
     }
   }
   //a) 166630675
   //b) 93465710
-  // answer for a) 171309157
+  // answer for a) 166630675
   // answer for b) 1167717;
   console.log(`regexp`, { comparisonList, total });
   return comparisonList;
