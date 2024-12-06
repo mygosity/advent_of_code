@@ -19,13 +19,10 @@ function testPath(grid, sx, sy, directionIndex) {
   while (q.length) {
     const [x, y, directionIndex] = q.pop();
 
-    // console.log({ v, x, y, directionIndex });
-
     if (v[y][x][directionIndex]) {
       return true;
     }
     v[y][x][directionIndex] = 1;
-    // console.log({ x, y, directionIndex });
 
     for (let i = 0; i <= 3; ++i) {
       const di = (directionIndex + i) % 4;
@@ -61,8 +58,8 @@ function constructVisitedAndCompleteGrid(grid) {
     .fill(0)
     .map(() => new Array(grid.length).fill(0));
 
-  function search(x, y, directionIndex) {
-    let q = [[x, y, directionIndex, [0]]];
+  function search(sx, sy, directionIndex) {
+    let q = [[sx, sy, directionIndex, [0]]];
     while (q.length) {
       const [x, y, directionIndex] = q.pop();
 
@@ -72,7 +69,6 @@ function constructVisitedAndCompleteGrid(grid) {
 
       const key = x + y * grid[y].length;
       if (v[key][directionIndex]) {
-        // console.log("seen this place before!!!!");
         continue;
       }
       v[key][directionIndex] = 1;
@@ -108,10 +104,33 @@ function constructVisitedAndCompleteGrid(grid) {
   return { count, guardPosition };
 }
 
+function solveGrid(grid) {
+  const {
+    count,
+    guardPosition: [gx, gy],
+  } = constructVisitedAndCompleteGrid(grid);
+  let timeLoops = 0;
+  let size = 0;
+  for (let y = 0; y < count.length; ++y) {
+    for (let x = 0; x < count[y].length; ++x) {
+      if (count[y][x] === 0) continue;
+      size++;
+      if (x === gx && y === gy) {
+        continue;
+      }
+      grid[y][x] = "#";
+      if (testPath(grid, gx, gy, 0)) {
+        timeLoops++;
+      }
+      grid[y][x] = ".";
+    }
+  }
+  console.log({ size, timeLoops });
+}
+
 async function solveAdventPuzzle() {
   const file = currPath + "06.txt";
   const data = fs.readFileSync(file).toString();
-  // console.log(data);
   const parseAble = data.split("\n");
 
   const grid = new Array(parseAble.length)
@@ -126,34 +145,8 @@ async function solveAdventPuzzle() {
       grid[y][x] = c;
     }
     y++;
-    // console.log(nextLine);
   }
-  const {
-    count,
-    guardPosition: [gx, gy],
-  } = constructVisitedAndCompleteGrid(grid);
-
-  // console.log({ gx, gy });
-
-  let loop = 0;
-  let size = 0;
-  for (let y = 0; y < count.length; ++y) {
-    for (let x = 0; x < count[y].length; ++x) {
-      if (count[y][x] === 0) continue;
-      size++;
-      if (x === gx && y === gy) {
-        continue;
-      }
-      grid[y][x] = "#";
-      //   console.log(grid);
-      //   console.log({ x, y });
-      if (testPath(grid, gx, gy, 0)) {
-        loop++;
-      }
-      grid[y][x] = ".";
-    }
-  }
-  console.log({ size, loop });
+  solveGrid(grid);
 }
 
 solveAdventPuzzle();
