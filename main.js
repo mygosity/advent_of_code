@@ -22,7 +22,7 @@ const evaluatePuzzle = (puzzleNumber) => {
 };
 
 async function main() {
-  const currentDefaultTest = 5;
+  const currentDefaultTest = 6;
   evaluatePuzzle(currentDefaultTest);
 
   readline.on("line", async (input) => {
