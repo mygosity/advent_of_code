@@ -4,13 +4,11 @@ console.log(`loaded 2024/07.js`, { global, currPath });
 async function solveAdventPuzzle() {
   const file = currPath + "19.txt";
   const data = fs.readFileSync(file).toString();
-  // console.log(data);
-  const parseAble = data.split("\n");
+
+  const lines = data.split("\n");
 
   let possibles = 0n;
-  for (const line of parseAble) {
-    // let [equals, rest] = line.split(":");
-    // break;
+  for (const line of lines) {
   }
   console.log({ possibles });
 }

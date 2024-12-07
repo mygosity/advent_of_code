@@ -54,7 +54,7 @@ function constructVisitedAndCompleteGrid(grid) {
     [-1, 0],
   ];
 
-  const count = new Array(grid[0].length)
+  const visitedMap = new Array(grid[0].length)
     .fill(0)
     .map(() => new Array(grid.length).fill(0));
 
@@ -72,7 +72,7 @@ function constructVisitedAndCompleteGrid(grid) {
         continue;
       }
       v[key][directionIndex] = 1;
-      count[y][x] = 1;
+      visitedMap[y][x] = 1;
 
       for (let i = 0; i <= 3; ++i) {
         const di = (directionIndex + i) % 4;
@@ -101,19 +101,20 @@ function constructVisitedAndCompleteGrid(grid) {
       }
     }
   }
-  return { count, guardPosition };
+  return { visitedMap, guardPosition };
 }
 
 function solveGrid(grid) {
   const {
-    count,
+    visitedMap,
     guardPosition: [gx, gy],
   } = constructVisitedAndCompleteGrid(grid);
   let timeLoops = 0;
   let size = 0;
-  for (let y = 0; y < count.length; ++y) {
-    for (let x = 0; x < count[y].length; ++x) {
-      if (count[y][x] === 0) continue;
+
+  for (let y = 0; y < visitedMap.length; ++y) {
+    for (let x = 0; x < visitedMap[y].length; ++x) {
+      if (visitedMap[y][x] === 0) continue;
       size++;
       if (x === gx && y === gy) {
         continue;
@@ -131,14 +132,12 @@ function solveGrid(grid) {
 async function solveAdventPuzzle() {
   const file = currPath + "06.txt";
   const data = fs.readFileSync(file).toString();
-  const parseAble = data.split("\n");
+  const lines = data.split("\n");
 
-  const grid = new Array(parseAble.length)
-    .fill(0)
-    .map(() => new Array().fill("."));
+  const grid = new Array(lines.length).fill(0).map(() => new Array().fill("."));
 
   let y = 0;
-  for (const line of parseAble) {
+  for (const line of lines) {
     const nextLine = line.split("");
     for (let x = 0; x < nextLine.length; ++x) {
       const c = nextLine[x];

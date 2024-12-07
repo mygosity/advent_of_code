@@ -20,18 +20,17 @@ async function solveAdventPuzzle02() {
   const file = currPath + "02.txt";
   const data = fs.readFileSync(file).toString();
   console.log(data);
-  const parseAble = data.split("\n");
+  const lines = data.split("\n");
   console.log({
-    len: parseAble.length,
+    len: lines.length,
   });
 
   let safe = 0;
 
-  searching: for (const line of parseAble) {
+  searching: for (const line of lines) {
     const nums = line.split(" ").map((x) => Number(x));
     // The levels are either all increasing or all decreasing.
     // Any two adjacent levels differ by at least one and at most three.
-    // console.log({ nums });
 
     //20 19 21 22 23 24
     //21 27 23 22 21 20

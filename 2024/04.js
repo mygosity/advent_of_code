@@ -4,14 +4,14 @@ console.log(`loaded 2024/04.js`, { global, currPath });
 function findXmas(grid) {
   let total = 0;
   const directions = [
-    [0, 1],
-    [0, -1], //horizontal
-    [1, 0],
-    [-1, 0], //vertical
-    [1, 1],
-    [-1, -1], //BR, TL
-    [-1, 1],
-    [1, -1], //BL, TR
+    [0, 1], //right
+    [0, -1], //left
+    [1, 0], //down
+    [-1, 0], //up
+    [1, 1], //BR
+    [-1, -1], //TL
+    [-1, 1], //BL
+    [1, -1], //TR
   ];
 
   function search(x, y, i, [dx, dy]) {
@@ -73,20 +73,16 @@ function findMasMas(grid) {
 async function solveAdventPuzzle04() {
   const file = currPath + "04.txt";
   const data = fs.readFileSync(file).toString();
-  // console.log(data);
-  const parseAble = data.split("\n");
-  //   console.log({
-  //     parseAble,
-  //     len: parseAble.length,
-  //   });
-  const grid = new Array(parseAble.length).fill(0).map(() => []);
-  for (let y = 0; y < parseAble.length; ++y) {
-    const line = parseAble[y];
+  const lines = data.split("\n");
+
+  const grid = new Array(lines.length).fill(0).map(() => []);
+  for (let y = 0; y < lines.length; ++y) {
+    const line = lines[y];
     for (let x = 0; x < line.length; ++x) {
       grid[y][x] = line[x];
     }
   }
-  //   console.log(grid);
+
   let totalXmas = findXmas(grid);
   let totalMasMas = findMasMas(grid);
 

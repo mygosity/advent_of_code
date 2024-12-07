@@ -4,13 +4,13 @@ console.log(`loaded 2024/05.js`, { global, currPath });
 async function solveAdventPuzzle() {
   const file = currPath + "05.txt";
   const data = fs.readFileSync(file).toString();
-  // console.log(data);
-  const parseAble = data.split("\n");
+  const lines = data.split("\n");
+
   const rules = [];
   const lists = [];
 
   let isRule = true;
-  for (const line of parseAble) {
+  for (const line of lines) {
     if (line.replace(new RegExp(" ", "g"), "") === "") {
       isRule = false;
       continue;
@@ -26,14 +26,11 @@ async function solveAdventPuzzle() {
   for (const [to, from] of rules) {
     graph[from] = graph[from] || [];
     graph[from].push(to);
-    graph[from].sort((x, y) => x - y);
   }
-  //   console.log({ graph });
 
   let total = 0;
   let incorrectTotal = 0;
   for (const line of lists) {
-    // if (line.length !== 5) continue;
     const compare = line
       .map((x) => x)
       .sort((x, y) => {
@@ -45,8 +42,7 @@ async function solveAdventPuzzle() {
         }
         return 0;
       });
-    // console.log({ graph, line });
-    // break;
+
     if (compare.join("") === line.join("")) {
       total += compare[compare.length >> 1];
     } else {

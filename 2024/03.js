@@ -31,7 +31,6 @@ function solve(data) {
       data[i - 3] === "d"
     ) {
       enabled = true;
-      // console.log("enabled");
     } else if (
       data[i] === ")" &&
       data[i - 1] === "(" &&
@@ -42,7 +41,6 @@ function solve(data) {
       data[i - 6] === "d"
     ) {
       enabled = false;
-      // console.log("disabled");
     }
   }
   //a) 166630675
@@ -54,14 +52,9 @@ function solve(data) {
 async function solveAdventPuzzle03() {
   const file = currPath + "03.txt";
   const data = fs.readFileSync(file).toString();
-  // console.log(data);
-  // const parseAble = data.split("\n");
-  // console.log({
-  //   len: parseAble.length,
-  // });
 
   const listA = solve(data);
-  const listB = solveBetter(data);
+  const listB = solveWithRegexp(data);
 
   // console.log({ listALen: listA.length, listBLen: listB.length });
   const map = {};
@@ -75,12 +68,11 @@ async function solveAdventPuzzle03() {
       console.log(`extra value found: mul(${x},${y})`);
     }
   }
-
   //   console.log({ safe });
 }
 solveAdventPuzzle03();
 
-function solveBetter(data) {
+function solveWithRegexp(data) {
   const regexpMatchMult = /mul\(\d{1,3},\d{1,3}\)/g;
   // const matches = data.match(regexpMatchMult);
 

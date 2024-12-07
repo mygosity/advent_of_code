@@ -23,11 +23,10 @@ function canEquate(target, nums) {
 async function solveAdventPuzzle() {
   const file = currPath + "07.txt";
   const data = fs.readFileSync(file).toString();
-  // console.log(data);
-  const parseAble = data.split("\n");
+  const lines = data.split("\n");
 
   let possibles = 0n;
-  for (const line of parseAble) {
+  for (const line of lines) {
     let [equals, rest] = line.split(":");
     const vals = rest
       .split(" ")
@@ -35,12 +34,9 @@ async function solveAdventPuzzle() {
       .map((x) => BigInt(parseInt(x)));
     equals = BigInt(parseInt(equals));
 
-    // console.log({ equals, vals });
     if (canEquate(equals, vals)) {
-      // console.log(equals);
       possibles += equals;
     }
-    // break;
   }
   console.log({ possibles });
 }
