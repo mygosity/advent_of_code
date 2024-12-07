@@ -22,8 +22,11 @@ const evaluatePuzzle = (puzzleNumber) => {
 };
 
 async function main() {
-  const currentDefaultTest = 3;
+  const currentDefaultTest = 8;
   evaluatePuzzle(currentDefaultTest);
+
+  const instructions = `\nType a number to target that day's solution, or just hit enter and target the default which is : ${currentDefaultTest}\n`;
+  console.log(instructions);
 
   readline.on("line", async (input) => {
     try {
@@ -32,6 +35,8 @@ async function main() {
         evaluatePuzzle(currentDefaultTest);
       } else if (!isNaN(possibleNumber) && possibleNumber >= 0) {
         evaluatePuzzle(possibleNumber);
+      } else if (input === "help") {
+        console.log(instructions);
       } else {
         eval(input);
       }
@@ -41,6 +46,4 @@ async function main() {
     readline.prompt();
   });
 }
-console.log(`advent_of_code:: started`);
 main();
-console.log(`advent_of_code:: ended`);
