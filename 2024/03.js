@@ -3,7 +3,8 @@ console.log(`\n******************\nLoaded 2024/03.js`);
 console.log(`******************\n`);
 
 function solve(data) {
-  let total = 0;
+  let aTotal = 0;
+  let bTotal = 0;
   let enabled = true;
 
   //for comparison to alt solution
@@ -22,7 +23,8 @@ function solve(data) {
       }
       const [numbers, random] = nextBlock.split(")");
       const [x, y] = numbers.split(",");
-      if (enabled) total += parseInt(x) * parseInt(y);
+      aTotal += parseInt(x) * parseInt(y);
+      if (enabled) bTotal += parseInt(x) * parseInt(y);
       matchList.push([parseInt(x), parseInt(y)]);
     } else if (
       data[i] === ")" &&
@@ -45,7 +47,7 @@ function solve(data) {
   }
   //a) 166630675
   //b) 93465710
-  console.log(`brute force`, { total });
+  console.log(`bruteF`, { aTotal, bTotal });
   return matchList;
 }
 
@@ -82,45 +84,57 @@ function solveWithRegexp(data) {
   }
 
   let doOrNotList = [];
-  const regexpMatchDo = /do\(\)*/g;
+  const regexpMatchDo = /do\(\)/g;
   while ((match = regexpMatchDo.exec(data)) !== null) {
     // console.log(`Matched: "${match[0]}" at index ${match.index}`);
     doOrNotList.push([match[0], match.index]);
   }
 
-  const regexpMatchDont = /don't\(\)*/g;
+  const regexpMatchDont = /don't\(\)/g;
   while ((match = regexpMatchDont.exec(data)) !== null) {
     // console.log(`Matched: "${match[0]}" at index ${match.index}`);
     doOrNotList.push([match[0], match.index]);
   }
+
   doOrNotList = doOrNotList
     .sort(([_, x], [__, y]) => x - y)
-    .map(([val, priority]) => [val === "do()", priority]);
+    .map(([val, index]) => {
+      return {
+        should: val === "do()",
+        index,
+      };
+    });
 
-  // console.log({ matchList, doOrNotList });
   const comparisonList = [];
 
-  let total = 0;
-  let doIndex = 0;
+  let aTotal = 0;
+  let bTotal = 0;
+  let listIndex = 0;
   let shouldAddTotal = true;
+
   for (const [match, index] of matchList) {
-    if (doOrNotList?.[doIndex]?.[1] < index) {
-      doIndex++;
-      shouldAddTotal = doOrNotList[doIndex]?.[1] === true;
+    while (
+      listIndex < doOrNotList.length &&
+      doOrNotList[listIndex].index < index
+    ) {
+      shouldAddTotal = doOrNotList[listIndex].should;
+      listIndex++;
     }
+
+    const [_, right] = match.split("mul(");
+    const [numbers, __] = right.split(")");
+    const [x, y] = numbers.split(",");
+    aTotal += parseInt(x) * parseInt(y);
+
     if (shouldAddTotal) {
-      const [_, right] = match.split("mul(");
-      const [numbers, __] = right.split(")");
-      const [x, y] = numbers.split(",");
-      // console.log({ match, x, y });
-      total += parseInt(x) * parseInt(y);
+      bTotal += parseInt(x) * parseInt(y);
       comparisonList.push([parseInt(x), parseInt(y)]);
     }
   }
   //a) 166630675
   //b) 93465710
   // answer for a) 166630675
-  // answer for b) 1167717;
-  console.log(`regexp`, { total });
+  // answer for b) 91744951;
+  console.log(`regexp`, { aTotal, bTotal });
   return comparisonList;
 }
