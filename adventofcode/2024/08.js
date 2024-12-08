@@ -7,7 +7,7 @@ function printOutput(output, uniquesMap) {
     const keyNum = parseInt(key);
     const x = key % output.length;
     const y = Math.floor(key / output[0].length);
-    output[y][x] = "*";
+    output[y][x] = "#";
   }
 
   let testOutputString = "";
@@ -24,19 +24,6 @@ function findAntennas(c, list, grid, uniquesMap) {
   const m = grid.length;
   const n = grid[0].length;
 
-  const testOutput = [];
-  for (let y = 0; y < m; ++y) {
-    testOutput[y] = [];
-    for (let x = 0; x < n; ++x) {
-      if (grid[y][x] !== "." && grid[y][x] !== c) {
-        testOutput[y][x] = ".";
-        continue;
-      }
-      testOutput[y][x] = grid[y][x];
-    }
-  }
-  // console.log(testOutput);
-
   // sort left to right, bottom to top
   list.sort((x, y) => x[0] - y[0] || x[1] - y[1]);
 
@@ -44,6 +31,11 @@ function findAntennas(c, list, grid, uniquesMap) {
     for (let j = i + 1; j < list.length; ++j) {
       const [ax, ay] = list[i];
       const [bx, by] = list[j];
+
+      const akey = ax + ay * n;
+      const bkey = bx + by * n;
+      uniquesMap[akey] = 1;
+      uniquesMap[bkey] = 1;
 
       //this is positive and can be zero
       const xDiff = bx - ax;
@@ -67,7 +59,7 @@ function findAntennas(c, list, grid, uniquesMap) {
       let nextX = bx + xDiff;
       let nextY = by + (gradient > 0 ? yDiff : -yDiff);
 
-      if (nextX < n && nextX >= 0 && nextY >= 0 && nextY < n) {
+      while (nextX < n && nextX >= 0 && nextY >= 0 && nextY < m) {
         const key = nextX + nextY * n;
         uniquesMap[key] = 1;
         nextX = nextX + xDiff;
@@ -76,7 +68,7 @@ function findAntennas(c, list, grid, uniquesMap) {
 
       nextX = ax - xDiff;
       nextY = ay + (gradient > 0 ? -yDiff : yDiff);
-      if (nextX < n && nextX >= 0 && nextY >= 0 && nextY < n) {
+      while (nextX < n && nextX >= 0 && nextY >= 0 && nextY < m) {
         const key = nextX + nextY * n;
         uniquesMap[key] = 1;
         nextX = nextX - xDiff;
@@ -84,7 +76,6 @@ function findAntennas(c, list, grid, uniquesMap) {
       }
     }
   }
-  // printOutput(testOutput, uniquesMap);
   return uniquesMap;
 }
 
@@ -106,8 +97,19 @@ function solve(grid) {
   // console.log({ groups });
   const uniquesMap = {};
   for (const c in groups) {
-    const antennas = findAntennas(c, groups[c], grid, uniquesMap);
+    findAntennas(c, groups[c], grid, uniquesMap);
   }
+
+  const testOutput = [];
+  for (let y = 0; y < m; ++y) {
+    testOutput[y] = [];
+    for (let x = 0; x < n; ++x) {
+      testOutput[y][x] = grid[y][x];
+    }
+  }
+  // console.log(testOutput);
+
+  printOutput(testOutput, uniquesMap);
   return Object.keys(uniquesMap).length;
 }
 
@@ -119,6 +121,7 @@ async function solveAdventPuzzle() {
 
   let possibles = 0n;
   const grid = new Array(lines.length).fill(0).map(() => new Array());
+
   let y = 0;
   for (const line of lines) {
     const nextLine = line.split("");
