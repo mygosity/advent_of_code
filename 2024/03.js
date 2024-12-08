@@ -1,5 +1,6 @@
 const currPath = global.root + "/2024/";
-console.log(`loaded 2024/03.js`, { global, currPath });
+console.log(`\n******************\nLoaded 2024/03.js`);
+console.log(`******************\n`);
 
 function solve(data) {
   let total = 0;
@@ -21,7 +22,6 @@ function solve(data) {
       }
       const [numbers, random] = nextBlock.split(")");
       const [x, y] = numbers.split(",");
-      // console.log({ x, y });
       if (enabled) total += parseInt(x) * parseInt(y);
       matchList.push([parseInt(x), parseInt(y)]);
     } else if (
@@ -45,7 +45,7 @@ function solve(data) {
   }
   //a) 166630675
   //b) 93465710
-  console.log({ matchList, total });
+  console.log(`brute force`, { total });
   return matchList;
 }
 
@@ -68,7 +68,6 @@ async function solveAdventPuzzle03() {
       console.log(`extra value found: mul(${x},${y})`);
     }
   }
-  //   console.log({ safe });
 }
 solveAdventPuzzle03();
 
@@ -113,7 +112,7 @@ function solveWithRegexp(data) {
       const [_, right] = match.split("mul(");
       const [numbers, __] = right.split(")");
       const [x, y] = numbers.split(",");
-      console.log({ match, x, y });
+      // console.log({ match, x, y });
       total += parseInt(x) * parseInt(y);
       comparisonList.push([parseInt(x), parseInt(y)]);
     }
@@ -122,6 +121,6 @@ function solveWithRegexp(data) {
   //b) 93465710
   // answer for a) 166630675
   // answer for b) 1167717;
-  console.log(`regexp`, { comparisonList, total });
+  console.log(`regexp`, { total });
   return comparisonList;
 }

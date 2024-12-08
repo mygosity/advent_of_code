@@ -1,5 +1,6 @@
 const currPath = global.root + "/2024/";
-console.log(`loaded 2024/06.js`, { global, currPath });
+console.log(`\n******************\nLoaded 2024/06.js`);
+console.log(`******************\n`);
 
 function testPath(grid, sx, sy, directionIndex) {
   const v = new Array(grid.length)

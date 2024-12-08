@@ -1,5 +1,6 @@
 const currPath = global.root + "/2024/";
-console.log(`loaded 2024/02.js`, { global, currPath });
+console.log(`\n******************\nLoaded 2024/02.js`);
+console.log(`******************\n`);
 
 function isSafe(nums) {
   let prevDiff = null;
@@ -19,11 +20,7 @@ function isSafe(nums) {
 async function solveAdventPuzzle02() {
   const file = currPath + "02.txt";
   const data = fs.readFileSync(file).toString();
-  console.log(data);
   const lines = data.split("\n");
-  console.log({
-    len: lines.length,
-  });
 
   let safe = 0;
 

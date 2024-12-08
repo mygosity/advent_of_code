@@ -1,5 +1,6 @@
 const currPath = global.root + "/2024/";
-console.log(`loaded 2024/01.js`, { global, currPath });
+console.log(`\n******************\nLoaded 2024/01.js`);
+console.log(`******************\n`);
 
 async function solveAdventPuzzle01() {
   const file = currPath + "01.txt";

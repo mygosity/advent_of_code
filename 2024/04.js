@@ -1,5 +1,6 @@
 const currPath = global.root + "/2024/";
-console.log(`loaded 2024/04.js`, { global, currPath });
+console.log(`\n******************\nLoaded 2024/04.js`);
+console.log(`******************\n`);
 
 function findXmas(grid) {
   let total = 0;
