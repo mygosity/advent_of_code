@@ -1,4 +1,4 @@
-const currPath = global.root + "/adventofcode/2024/";
+const currInputPath = paths.adventOfCode + "/2024/inputs/";
 console.log(`\n******************\nLoaded 2024/04.js`);
 console.log(`******************\n`);
 
@@ -72,7 +72,7 @@ function findMasMas(grid) {
 }
 
 async function solveAdventPuzzle04() {
-  const file = currPath + "04.txt";
+  const file = currInputPath + "04.txt";
   const data = fs.readFileSync(file).toString();
   const lines = data.split("\n");
 

@@ -1,4 +1,5 @@
-const currPath = global.root + "/adventofcode/2024/";
+const currInputPath = paths.adventOfCode + "/2024/inputs/";
+const testOutputPath = paths.testOutputs + "/adventofcode/";
 console.log(`\n******************\nLoaded 2024/08.js`);
 console.log(`******************\n`);
 
@@ -17,7 +18,7 @@ function printOutput(output, uniquesMap) {
     }
     testOutputString += "\n";
   }
-  fs.writeFileSync("testoutput.txt", testOutputString);
+  fs.writeFileSync(testOutputPath + "08.txt", testOutputString);
 }
 
 function findAntennas(c, list, grid, uniquesMap) {
@@ -115,7 +116,7 @@ function solve(grid) {
 }
 
 async function solveAdventPuzzle() {
-  const file = currPath + "08.txt";
+  const file = currInputPath + "08.txt";
   const data = fs.readFileSync(file).toString();
 
   const lines = data.split("\n");

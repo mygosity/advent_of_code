@@ -1,4 +1,4 @@
-const currPath = global.root + "/adventofcode/2024/";
+const currInputPath = paths.adventOfCode + "/2024/inputs/";
 console.log(`\n******************\nLoaded 2024/02.js`);
 console.log(`******************\n`);
 
@@ -18,7 +18,7 @@ function isSafe(nums) {
 }
 
 async function solveAdventPuzzle02() {
-  const file = currPath + "02.txt";
+  const file = currInputPath + "02.txt";
   const data = fs.readFileSync(file).toString();
   const lines = data.split("\n");
 

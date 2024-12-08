@@ -5,8 +5,19 @@ const readline = rl.createInterface({
   output: process.stdout,
 });
 
+const root = require("path").resolve(__dirname, "./");
+const paths = {
+  root,
+  adventOfCode: root + "/adventofcode",
+  adventOfJs: root + "/adventofjs",
+  testOutputs: root + "/testoutputs",
+};
 const global = {
-  root: require("path").resolve(__dirname, "./"),
+  defaults: {
+    year: 2024,
+    puzzleType: "code",
+    challengeLevel: { code: 8, js: 8 },
+  },
 };
 
 const getStringFromFilePath = (filePath) => {
@@ -15,15 +26,12 @@ const getStringFromFilePath = (filePath) => {
 
 const getTargetPathForAdventOfCode = (year, input) => {
   return (
-    global.root +
-    `/adventofcode/${year}/${input.toString().padStart(2, "0")}.js`
+    paths.adventOfCode + `/${year}/src/${input.toString().padStart(2, "0")}.js`
   );
 };
 
 const getTargetPathForAdventOfJS = (year, input) => {
-  return (
-    global.root + `/adventofjs/${year}/${input.toString().padStart(2, "0")}.js`
-  );
+  return paths.adventOfJs + `/${year}/${input.toString().padStart(2, "0")}.js`;
 };
 
 const evaluatePuzzle = (puzzleNumber, type) => {
@@ -46,11 +54,8 @@ const evaluatePuzzle = (puzzleNumber, type) => {
 };
 
 async function main() {
-  let puzzleType = "code";
-  const currentDefaultTest = 8;
-
-  // let puzzleType = "js";
-  // const currentDefaultTest = 8;
+  const { puzzleType, challengeLevel } = global.defaults;
+  const currentDefaultTest = challengeLevel[puzzleType];
   evaluatePuzzle(currentDefaultTest, puzzleType);
 
   let instructions = `\nType a number to target that day's solution, or just hit enter and target the default which is : ${currentDefaultTest} and type: advent of ${puzzleType}`;
@@ -63,10 +68,10 @@ async function main() {
       if (input === "") {
         evaluatePuzzle(currentDefaultTest, puzzleType);
       } else if (input === "js") {
-        puzzleType = "js";
+        global.defaults.puzzleType = "js";
         console.log("swapped to advent of js!");
       } else if (input === "code") {
-        puzzleType = "code";
+        global.defaults.puzzleType = "code";
         console.log("swapped to advent of code!");
       } else if (!isNaN(possibleNumber) && possibleNumber >= 0) {
         evaluatePuzzle(possibleNumber, puzzleType);
