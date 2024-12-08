@@ -57,6 +57,7 @@ function findAntennas(c, list, grid, uniquesMap) {
 
       const gradient = (by - ay) / (bx - ax);
       let nextX = bx + xDiff;
+      //need to remember that the positive plane is down when graphing y/x unlike the number line
       let nextY = by + (gradient > 0 ? yDiff : -yDiff);
 
       while (nextX < n && nextX >= 0 && nextY >= 0 && nextY < m) {
