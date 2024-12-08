@@ -14,7 +14,10 @@ const getStringFromFilePath = (filePath) => {
 };
 
 const getTargetPathForAdventOfCode = (year, input) => {
-  return global.root + `/${year}/${input.toString().padStart(2, "0")}.js`;
+  return (
+    global.root +
+    `/adventofcode/${year}/${input.toString().padStart(2, "0")}.js`
+  );
 };
 
 const getTargetPathForAdventOfJS = (year, input) => {

@@ -1,9 +1,9 @@
-const currPath = global.root + "/2024/";
-console.log(`\n******************\nLoaded 2024/07.js`);
+const currPath = global.root + "/adventofcode/2024/";
+console.log(`\n******************\nLoaded 2024/12.js`);
 console.log(`******************\n`);
 
 async function solveAdventPuzzle() {
-  const file = currPath + "19.txt";
+  const file = currPath + "12.txt";
   const data = fs.readFileSync(file).toString();
 
   const lines = data.split("\n");

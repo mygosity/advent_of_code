@@ -1,4 +1,4 @@
-const currPath = global.root + "/2024/";
+const currPath = global.root + "/adventofcode/2024/";
 console.log(`\n******************\nLoaded 2024/07.js`);
 console.log(`******************\n`);
 
