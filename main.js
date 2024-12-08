@@ -45,9 +45,12 @@ const evaluatePuzzle = (puzzleNumber, type) => {
 async function main() {
   let puzzleType = "code";
   const currentDefaultTest = 8;
-  evaluatePuzzle(currentDefaultTest);
 
-  let instructions = `\nType a number to target that day's solution, or just hit enter and target the default which is : ${currentDefaultTest}`;
+  // let puzzleType = "js";
+  // const currentDefaultTest = 8;
+  evaluatePuzzle(currentDefaultTest, puzzleType);
+
+  let instructions = `\nType a number to target that day's solution, or just hit enter and target the default which is : ${currentDefaultTest} and type: advent of ${puzzleType}`;
   instructions += `\nSelect the challenge type by typing js for advent of js or code for advent of code\n`;
   console.log(instructions);
 
