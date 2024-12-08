@@ -13,12 +13,40 @@ const getStringFromFilePath = (filePath) => {
   return fs.readFileSync(filePath).toString();
 };
 
-const getTargetPath = (year, input) => {
+const getTargetPathForAdventOfCode = (year, input) => {
   return global.root + `/${year}/${input.toString().padStart(2, "0")}.js`;
 };
 
-const evaluatePuzzle = (puzzleNumber) => {
-  eval(getStringFromFilePath(getTargetPath("2024", puzzleNumber)));
+const getTargetPathForAdventOfJS = (year, input) => {
+  return (
+    global.root + `/adventofjs/${year}/${input.toString().padStart(2, "0")}.js`
+  );
+};
+
+const evaluatePuzzle = (puzzleNumber, type) => {
+  switch (type) {
+    case "code": {
+      eval(
+        getStringFromFilePath(
+          getTargetPathForAdventOfCode("2024", puzzleNumber)
+        )
+      );
+      break;
+    }
+    case "js": {
+      eval(
+        getStringFromFilePath(getTargetPathForAdventOfJS("2024", puzzleNumber))
+      );
+      break;
+    }
+    default: {
+      eval(
+        getStringFromFilePath(
+          getTargetPathForAdventOfCode("2024", puzzleNumber)
+        )
+      );
+    }
+  }
 };
 
 async function main() {
