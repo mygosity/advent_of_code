@@ -8,9 +8,10 @@ async function solveAdventPuzzle() {
 
   const lines = data.split("\n");
 
-  let possibles = 0n;
   for (const line of lines) {
   }
-  console.log({ possibles });
+
+  let sum = 0n;
+  console.log({ sum });
 }
 solveAdventPuzzle();
