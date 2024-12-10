@@ -11,16 +11,13 @@ function solveCombos(grid) {
     [-1, 0],
     [1, 0],
   ];
+
   function search(x, y) {
     let v = new Set();
     let ninesFound = 0;
-    let q = [[x, y]];
+    let q = [[x, y, x + y * grid[0].length + ""]];
     while (q.length) {
       const [x, y] = q.pop();
-      const key = x + y * grid[0].length;
-      if (v.has(key)) continue;
-      v.add(key);
-
       if (grid[y][x] === 9) {
         ninesFound++;
         continue;
