@@ -16,7 +16,7 @@ const global = {
   defaults: {
     year: 2024,
     puzzleType: "code",
-    challengeLevel: { code: 11, js: 9 },
+    challengeLevel: { code: 12, js: 9 },
   },
 };
 
