@@ -2,16 +2,13 @@ const currInputPath = paths.adventOfCode + "/2024/inputs/";
 console.log(`\n******************\nLoaded 2024/12.js`);
 console.log(`******************\n`);
 
-function getSides(grid, marked, n, directions) {
+function getSides(marked, directions) {
   let sides = 0;
 
-  // marked.sort(([a, b, c], [d, e, f]) => c - f || a - d || b - e);
-  // console.log({ marked });
-
-  const validTileMap = {};
+  const validTileMap = new Set();
   for (const [x, y, directionIndex] of marked) {
     const key = x + "|" + y + "|" + directionIndex;
-    validTileMap[key] = 1;
+    validTileMap.add(key);
   }
 
   const seen = new Set();
@@ -36,7 +33,7 @@ function getSides(grid, marked, n, directions) {
             const nx = dx + cx;
             const ny = dy + cy;
             const nkey = nx + "|" + ny + "|" + di;
-            if (!validTileMap[nkey]) continue;
+            if (!validTileMap.has(nkey)) continue;
             stack.push([nx, ny, di]);
           }
           break;
@@ -47,14 +44,13 @@ function getSides(grid, marked, n, directions) {
             const nx = dx + cx;
             const ny = dy + cy;
             const nkey = nx + "|" + ny + "|" + di;
-            if (!validTileMap[nkey]) continue;
+            if (!validTileMap.has(nkey)) continue;
             stack.push([nx, ny, di]);
           }
           break;
         }
       }
     }
-    // console.log(group);
     sides += 1;
   }
 
@@ -112,8 +108,8 @@ function solve(grid) {
       if (v.has(key)) continue;
       const [p, a, marked] = getMetrics(x, y, grid[y][x]);
       // console.log({ externalTiles });
-      const s = getSides(grid, marked, grid[0].length, directions);
-      console.log({ s, p, a, c: grid[y][x] });
+      const s = getSides(marked, directions);
+      // console.log({ s, p, a, c: grid[y][x] });
       sum += BigInt(s) * BigInt(a);
     }
   }
