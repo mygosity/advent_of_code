@@ -13,26 +13,7 @@ function extractCoordinates(line, char) {
 }
 
 function solve(data) {
-  let sum = 0n;
   let mathsSum = 0n;
-
-  function dfs(cache, x, y, ax, ay, bx, by, tx, ty) {
-    if (x > tx && y > ty) {
-      return Infinity;
-    }
-    if (x === tx && y === ty) {
-      return 0;
-    }
-    const key = x + "|" + y;
-    if (cache[key] != null) {
-      return cache[key];
-    }
-    const cost = Math.min(
-      3 + dfs(cache, x + ax, y + ay, ax, ay, bx, by, tx, ty),
-      1 + dfs(cache, x + bx, y + by, ax, ay, bx, by, tx, ty)
-    );
-    return (cache[key] = cost);
-  }
 
   function maths(ax, ay, bx, by, tx, ty) {
     //Cax + Dbx = tx;
@@ -64,23 +45,8 @@ function solve(data) {
     let C = (tx * by - ty * bx) / det;
     let D = (ax * ty - ay * tx) / det;
 
-    if (C * ax + D * bx > tx || C * ay + D * by > ty) return 0;
     if (C * ax + D * bx !== tx || C * ay + D * by !== ty) {
-      //due to rounding error, we still need to use the old solution to find solve the small errors
-      const cache = {};
-      const remainingSum = dfs(
-        cache,
-        C * ax + D * bx,
-        C * ay + D * by,
-        ax,
-        ay,
-        bx,
-        by,
-        tx,
-        ty
-      );
-      if (remainingSum === Infinity) return 0;
-      return C * 3n + D + BigInt(remainingSum);
+      return 0;
     }
     const answer = C * 3n + D;
     return answer;
@@ -95,19 +61,11 @@ function solve(data) {
     // 75200131617108n answer for huge number
     tx += 10000000000000n;
     ty += 10000000000000n;
-
-    // console.log({ ax, ay, bx, by, tx, ty });
-
-    const cache = {};
-    // const other = dfs(cache, 0n, 0n, ax, ay, bx, by, tx, ty);
-    // sum += BigInt(other === Infinity ? 0 : other);
-
     const answer = maths(ax, ay, bx, by, tx, ty);
     mathsSum += BigInt(answer === Infinity ? 0 : answer);
-    // console.log({ maths: answer, dfs: other });
   }
-  console.log({ mathsSum, sum });
-  return sum;
+  console.log({ mathsSum });
+  return mathsSum;
 }
 
 async function solveAdventPuzzle() {
