@@ -81,6 +81,7 @@ function extractCoordinates(line, char) {
 
 function solve(data) {
   let sum = 0n;
+  let mathsSum = 0n;
 
   function dfs(cache, x, y, ax, ay, bx, by, tx, ty) {
     if (x > tx && y > ty) {
@@ -150,25 +151,81 @@ function solve(data) {
     return 0;
   }
 
+  function maths(ax, ay, bx, by, tx, ty) {
+    ax = parseInt(ax);
+    ay = parseInt(ay);
+    bx = parseInt(bx);
+    by = parseInt(by);
+    tx = parseInt(tx);
+    ty = parseInt(ty);
+    //Cax + Dbx = tx;
+    //Cay + Dby = ty;
+
+    //C = (tx - Dbx) / ax
+    //((tx - Dbx) / ax) * ay + Dby = ty
+    //(tx*ay)/ax - (Dbx*ay)/ax + Dby = ty;
+    //(tx * ay) / ax - ty = Dbx * ay / ax - Dby;
+    //(tx * ay) / ax - ty = D * (bx * ay / ax - by);
+    //D = ((tx * ay) / ax - ty) / (bx * ay / ax - by);
+    //C = (tx - Dbx) / ax;
+    // 60483436636441; = too low apparently
+    // 62391435128840n; = too low apparently
+    // 31015774907354n
+    const epsilon = 0.00000000001;
+    // const epsilon = 0;
+    const D = Math.floor(
+      ((tx * ay + epsilon) / ax - ty) / ((bx * ay + epsilon) / ax - by)
+    );
+    const C = Math.floor((tx - D * bx + epsilon) / ax);
+    // console.log({ C, D });
+    if (tx > Number.MAX_SAFE_INTEGER || ty > Number.MAX_SAFE_INTEGER) {
+      console.log("noooooooodddddddoo");
+    }
+    if (C < 0 || D < 0) return 0;
+    if (C * ax + D * bx !== tx || C * ay + D * by !== ty) return 0;
+    // console.log({
+    //   check: [C * ax + D * bx, C * ay + D * by],
+    //   tx,
+    //   ty,
+    // });
+    return C * 3 + D;
+  }
+
+  function mathsBigInt(ax, ay, bx, by, tx, ty) {
+    const D = ((tx * ay) / ax - ty) / ((bx * ay) / ax - by);
+    const C = (tx - D * bx) / ax;
+    // console.log({ C, D });
+    if (C < 0 || D < 0) return 0;
+    if (C * ax + D * bx !== tx || C * ay + D * by !== ty) return 0;
+    // console.log({
+    //   check: [C * ax + D * bx, C * ay + D * by],
+    //   tx,
+    //   ty,
+    // });
+    return C * 3n + D;
+  }
+
   for (const puzzleSet of data) {
     let [lineAStr, lineBStr, prizeLocationStr] = puzzleSet;
     const [ax, ay] = extractCoordinates(lineAStr.split(":")[1], "+");
     const [bx, by] = extractCoordinates(lineBStr.split(":")[1], "+");
     let [tx, ty] = extractCoordinates(prizeLocationStr.split(":")[1], "=");
-    // tx += 10000000000000n;
-    // ty += 10000000000000n;
-    tx += 84000n;
-    ty += 54000n;
+    tx += 10000000000000n;
+    ty += 10000000000000n;
+    // tx += 84000n;
+    // ty += 54000n;
 
     // console.log({ ax, ay, bx, by, tx, ty });
 
     const cache = {};
-    const other = dfs(cache, 0n, 0n, ax, ay, bx, by, tx, ty);
-    sum += BigInt(other === Infinity ? 0 : other);
+    // const other = dfs(cache, 0n, 0n, ax, ay, bx, by, tx, ty);
+    // sum += BigInt(other === Infinity ? 0 : other);
 
-    // const answer = mapAllFactors(ax, ay, bx, by, tx, ty);
+    const answer = mathsBigInt(ax, ay, bx, by, tx, ty);
+    mathsSum += BigInt(answer === Infinity ? 0 : answer);
+    // console.log({ maths: answer, dfs: other });
   }
-
+  console.log({ mathsSum, sum });
   return sum;
 }
 
