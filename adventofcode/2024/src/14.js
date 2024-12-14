@@ -17,8 +17,6 @@ function print(grid, time) {
 }
 
 function solve(data) {
-  let sum = 0n;
-
   const height = 103;
   const width = 101;
 
@@ -113,7 +111,10 @@ function solve(data) {
     }
 
     // console.log({ maxConnection, searches });
+
+    //used a graph search to determine if there is a likely event of a tree appearing
     shouldPrint = maxConnection > 100;
+    //7572
     if (shouldPrint) print(grid, timeElapsed);
   }
 
@@ -125,12 +126,14 @@ function solve(data) {
     total: data.length,
   });
 
-  return BigInt(
+  //221616000n
+  const sum = BigInt(
     BigInt(topLeft) *
       BigInt(topRight) *
       BigInt(bottomLeft) *
       BigInt(bottomRight)
   );
+  return sum;
 }
 
 async function solveAdventPuzzle() {
