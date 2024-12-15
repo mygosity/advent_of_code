@@ -11,7 +11,7 @@ function print(grid) {
   console.log(o);
 }
 
-function solve(grid, instructions) {
+function solveB(grid, instructions) {
   let sum = 0n;
 
   let robotPosition = [];
@@ -49,7 +49,6 @@ function solve(grid, instructions) {
     return canMove;
   }
 
-  //always check from left side of brackets vertically
   function pushWall(dx, dy, wx, wy) {
     const currentPart = grid[wy][wx];
     if (currentPart !== "[" && currentPart !== "]") return;
@@ -57,7 +56,7 @@ function solve(grid, instructions) {
     if (dy === 0) {
       const nx = wx + dx * 2;
       const ny = wy + dy * 2;
-      if (grid[ny]?.[nx] == null || grid[ny]?.[nx] === "#") return false;
+      if (grid[ny]?.[nx] == null || grid[ny]?.[nx] === "#") return;
       if (grid[ny]?.[nx] === "[" || grid[ny]?.[nx] === "]") {
         pushWall(dx, dy, nx, ny);
       }
@@ -66,9 +65,9 @@ function solve(grid, instructions) {
         grid[ny][nx] = backPart;
         grid[wy + dy][wx + dx] = currentPart;
         grid[wy][wx] = ".";
-        return true;
+        return;
       }
-      return false;
+      return;
     }
 
     //handling up/down
@@ -102,7 +101,6 @@ function solve(grid, instructions) {
     const [cx, cy] = robotPosition;
     let nx = dx + cx;
     const ny = dy + cy;
-    let adjustItBack = false;
 
     if (grid[ny]?.[nx] == null || grid[ny]?.[nx] === "#") return;
 
@@ -115,17 +113,12 @@ function solve(grid, instructions) {
         //  []
         // [][] case 2 (jagged vertical)
         //  []
-        if (grid[ny]?.[nx] === "]") {
-          nx = nx - 1; //always choose the left side of the wall
-          adjustItBack = true;
-        }
-        if (isVerticallyAllowed(dx, dy, nx, ny)) {
+        if (
+          isVerticallyAllowed(dx, dy, grid[ny]?.[nx] === "]" ? nx - 1 : nx, ny)
+        ) {
           pushWall(dx, dy, nx, ny);
         }
       }
-    }
-    if (adjustItBack) {
-      nx += 1;
     }
     if (grid[ny]?.[nx] === ".") {
       grid[ny][nx] = "@";
@@ -169,13 +162,91 @@ function solve(grid, instructions) {
   return sum;
 }
 
+function solveA(grid, instructions) {
+  let sum = 0n;
+
+  let robotPosition = [];
+  for (let y = 0; y < grid.length; ++y) {
+    for (let x = 0; x < grid[y].length; ++x) {
+      if (grid[y][x] === "@") {
+        robotPosition = [x, y];
+        break;
+      }
+    }
+  }
+
+  function pushWall(dx, dy, wx, wy) {
+    const nx = wx + dx;
+    const ny = wy + dy;
+    if (grid[ny]?.[nx] == null || grid[ny]?.[nx] === "#") return;
+    if (grid[ny]?.[nx] === "O") {
+      pushWall(dx, dy, nx, ny);
+    }
+    if (grid[ny]?.[nx] === ".") {
+      grid[ny][nx] = "O";
+      grid[wy][wx] = ".";
+      return;
+    }
+  }
+
+  function processMove(dx, dy) {
+    const [cx, cy] = robotPosition;
+    const nx = dx + cx;
+    const ny = dy + cy;
+    if (grid[ny]?.[nx] == null || grid[ny]?.[nx] === "#") return;
+
+    //handle wall here
+    if (grid[ny]?.[nx] === "O") {
+      pushWall(dx, dy, nx, ny);
+    }
+
+    if (grid[ny]?.[nx] === ".") {
+      grid[ny][nx] = "@";
+      robotPosition = [nx, ny];
+      grid[cy][cx] = ".";
+      return;
+    }
+  }
+
+  for (const i of instructions) {
+    switch (i) {
+      case "^": {
+        processMove(0, -1);
+        break;
+      }
+      case "v": {
+        processMove(0, 1);
+        break;
+      }
+      case "<": {
+        processMove(-1, 0);
+        break;
+      }
+      case ">": {
+        processMove(1, 0);
+        break;
+      }
+    }
+  }
+
+  for (let y = 0; y < grid.length; ++y) {
+    for (let x = 0; x < grid[y].length; ++x) {
+      if (grid[y][x] === "O") {
+        sum += BigInt(y * 100 + x);
+      }
+    }
+  }
+  return sum;
+}
+
 async function solveAdventPuzzle() {
   const file = currInputPath + fileTargetNumber + ".txt";
   const data = fs.readFileSync(file).toString();
 
   const lines = data.split("\n");
 
-  const grid = [];
+  const gridA = [];
+  const gridB = [];
   let y = 0;
   let isMappingGrid = true;
   const instructions = [];
@@ -185,27 +256,33 @@ async function solveAdventPuzzle() {
       continue;
     }
     if (isMappingGrid) {
-      grid[y] = [];
+      gridA[y] = [];
+      gridB[y] = [];
       for (const c of line.split("")) {
+        gridA[y].push(c);
         if (c === "@") {
-          grid[y].push(c);
-          grid[y].push(".");
+          gridB[y].push(c);
+          gridB[y].push(".");
           continue;
         }
         if (c === "O") {
-          grid[y].push("[");
-          grid[y].push("]");
+          gridB[y].push("[");
+          gridB[y].push("]");
           continue;
         }
-        grid[y].push(c);
-        grid[y].push(c);
+        gridB[y].push(c);
+        gridB[y].push(c);
       }
       y++;
       continue;
     }
     instructions.push(...line.split(""));
   }
-  console.log(instructions);
-  console.log({ answer: solve(grid, instructions) });
+  // console.log(instructions);
+  // part a = 1568399, part b = 1575877
+  console.log({
+    answerA: solveA(gridA, instructions),
+    answerB: solveB(gridB, instructions),
+  });
 }
 solveAdventPuzzle();
