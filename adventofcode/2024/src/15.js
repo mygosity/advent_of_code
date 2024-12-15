@@ -24,31 +24,109 @@ function solve(grid, instructions) {
     }
   }
 
-  function pushWall(dx, dy, wx, wy) {
+  //always check from left side of brackets vertically
+  function isVerticallyAllowed(dx, dy, wx, wy) {
     const nx = wx + dx;
     const ny = wy + dy;
-    if (grid[ny]?.[nx] == null || grid[ny]?.[nx] === "#") return;
-    if (grid[ny]?.[nx] === "O") {
+    const ox = wx + 1; //always choose the left side of this wall before invoking
+
+    let canMove = true;
+    const abovePart1 = grid[ny]?.[nx];
+    const abovePart2 = grid[ny]?.[ox];
+    if (abovePart1 == null || abovePart1 === "#") return false;
+    if (abovePart2 == null || abovePart2 === "#") return false;
+    if (abovePart1 === "." && abovePart2 === ".") return true;
+
+    if (abovePart1 === "]") {
+      canMove = canMove && isVerticallyAllowed(dx, dy, nx - 1, ny);
+    }
+    if (abovePart1 === "[") {
+      canMove = canMove && isVerticallyAllowed(dx, dy, nx, ny);
+    }
+    if (abovePart2 === "[") {
+      canMove = canMove && isVerticallyAllowed(dx, dy, ox, ny);
+    }
+    return canMove;
+  }
+
+  //always check from left side of brackets vertically
+  function pushWall(dx, dy, wx, wy) {
+    const currentPart = grid[wy][wx];
+    if (currentPart !== "[" && currentPart !== "]") return;
+
+    if (dy === 0) {
+      const nx = wx + dx * 2;
+      const ny = wy + dy * 2;
+      if (grid[ny]?.[nx] == null || grid[ny]?.[nx] === "#") return false;
+      if (grid[ny]?.[nx] === "[" || grid[ny]?.[nx] === "]") {
+        pushWall(dx, dy, nx, ny);
+      }
+      if (grid[ny]?.[nx] === ".") {
+        const backPart = grid[wy + dy][wx + dx];
+        grid[ny][nx] = backPart;
+        grid[wy + dy][wx + dx] = currentPart;
+        grid[wy][wx] = ".";
+        return true;
+      }
+      return false;
+    }
+
+    //handling up/down
+    //a check elsewhere will make sure this can move
+    const nx = wx + dx;
+    const ny = wy + dy;
+
+    const ox = currentPart === "[" ? nx + 1 : nx - 1;
+    const verticalPart1 = grid[ny]?.[nx];
+    const verticalPart2 = grid[ny]?.[ox];
+    if (verticalPart1 == null || verticalPart1 === "#") return;
+    if (verticalPart2 == null || verticalPart2 === "#") return;
+
+    if (verticalPart1 === "[" || verticalPart1 === "]") {
       pushWall(dx, dy, nx, ny);
     }
+
+    if (verticalPart2 === "[" || verticalPart2 === "]") {
+      pushWall(dx, dy, ox, ny);
+    }
+
     if (grid[ny]?.[nx] === ".") {
-      grid[ny][nx] = "O";
+      grid[ny][nx] = currentPart;
+      grid[ny][ox] = currentPart === "[" ? "]" : "[";
       grid[wy][wx] = ".";
-      return;
+      grid[wy][ox] = ".";
     }
   }
 
   function processMove(dx, dy) {
     const [cx, cy] = robotPosition;
-    const nx = dx + cx;
+    let nx = dx + cx;
     const ny = dy + cy;
+    let adjustItBack = false;
+
     if (grid[ny]?.[nx] == null || grid[ny]?.[nx] === "#") return;
 
     //handle wall here
-    if (grid[ny]?.[nx] === "O") {
-      pushWall(dx, dy, nx, ny);
+    if (grid[ny]?.[nx] === "[" || grid[ny]?.[nx] === "]") {
+      if (dy === 0) {
+        pushWall(dx, dy, nx, ny);
+      } else {
+        //  [] case 1 (straight vertical)
+        //  []
+        // [][] case 2 (jagged vertical)
+        //  []
+        if (grid[ny]?.[nx] === "]") {
+          nx = nx - 1; //always choose the left side of the wall
+          adjustItBack = true;
+        }
+        if (isVerticallyAllowed(dx, dy, nx, ny)) {
+          pushWall(dx, dy, nx, ny);
+        }
+      }
     }
-
+    if (adjustItBack) {
+      nx += 1;
+    }
     if (grid[ny]?.[nx] === ".") {
       grid[ny][nx] = "@";
       robotPosition = [nx, ny];
@@ -57,7 +135,9 @@ function solve(grid, instructions) {
     }
   }
 
+  let count = 0;
   for (const i of instructions) {
+    // if (count++ > 10000) break;
     switch (i) {
       case "^": {
         processMove(0, -1);
@@ -76,11 +156,12 @@ function solve(grid, instructions) {
         break;
       }
     }
+    // console.log({ i, count });
+    // print(grid);
   }
-  print(grid);
   for (let y = 0; y < grid.length; ++y) {
     for (let x = 0; x < grid[y].length; ++x) {
-      if (grid[y][x] === "O") {
+      if (grid[y][x] === "[" && grid[y][x + 1] === "]") {
         sum += BigInt(y * 100 + x);
       }
     }
@@ -106,6 +187,17 @@ async function solveAdventPuzzle() {
     if (isMappingGrid) {
       grid[y] = [];
       for (const c of line.split("")) {
+        if (c === "@") {
+          grid[y].push(c);
+          grid[y].push(".");
+          continue;
+        }
+        if (c === "O") {
+          grid[y].push("[");
+          grid[y].push("]");
+          continue;
+        }
+        grid[y].push(c);
         grid[y].push(c);
       }
       y++;
@@ -114,7 +206,6 @@ async function solveAdventPuzzle() {
     instructions.push(...line.split(""));
   }
   console.log(instructions);
-
   console.log({ answer: solve(grid, instructions) });
 }
 solveAdventPuzzle();
