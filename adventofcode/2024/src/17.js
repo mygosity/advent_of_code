@@ -3,6 +3,14 @@ const fileTargetNumber = 17;
 console.log(`\n******************\nLoaded 2024/${fileTargetNumber}.js`);
 console.log(`******************\n`);
 
+function print(grid) {
+  let o = "";
+  for (let y = 0; y < grid.length; ++y) {
+    o += grid[y].join("") + "\n";
+  }
+  console.log(o);
+}
+
 function solve(data) {
   let sum = 0n;
   return sum;

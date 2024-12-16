@@ -144,14 +144,11 @@ function solve(grid) {
 
 function solveB(grid, { bestPathPoints, bestTrail }) {
   let start = [];
-  let end = [];
 
   for (let y = 0; y < grid.length; ++y) {
     for (let x = 0; x < grid[y].length; ++x) {
       if (grid[y][x] === "S") {
         start = [x, y];
-      } else if (grid[y][x] === "E") {
-        end = [x, y];
       }
     }
   }
@@ -170,13 +167,6 @@ function solveB(grid, { bestPathPoints, bestTrail }) {
   pq.enqueue([...start, 0, 0, `${start[0] + start[1] * n}`], 0);
   const v = new Map();
 
-  // const bestPathMap = new Map();
-  // for (const str of bestTrail.split("|")) {
-  //   if (str === "") continue;
-  //   const [coordKey, directionIndex, points] = str.split(",");
-  //   bestPathMap.set(coordKey + "," + directionIndex, { points, trails: [] });
-  // }
-
   function getDistanceFromEnd(x, y, ox, oy) {
     const distance =
       Math.abs(oy - y) * Math.abs(oy - y) + Math.abs(ox - x) * Math.abs(ox - x);
@@ -194,8 +184,6 @@ function solveB(grid, { bestPathPoints, bestTrail }) {
       if (v.get(key).points < points) continue;
       if (v.get(key).points === points) {
         v.get(key).trails.add(trail);
-        // console.log({ cx, cy, key, points });
-        // continue;
       }
     } else {
       v.set(key, { points, trails: new Set([trail]) });
@@ -213,7 +201,6 @@ function solveB(grid, { bestPathPoints, bestTrail }) {
       pq.enqueue(
         [nx, ny, di, points + 1, trail + "|" + (nx + ny * n) + "," + di],
         points + 1
-        // getDistanceFromEnd(nx, ny, ...end)
       );
     }
 
@@ -221,11 +208,7 @@ function solveB(grid, { bestPathPoints, bestTrail }) {
       const nextIndex = (nextDirection + 4) % 4;
       dx = directions[nextIndex][0];
       dy = directions[nextIndex][1];
-      pq.enqueue(
-        [cx, cy, nextIndex, points + 1000, trail],
-        points + 1000
-        // getDistanceFromEnd(nx, ny, ...end)
-      );
+      pq.enqueue([cx, cy, nextIndex, points + 1000, trail], points + 1000);
     }
   }
 
@@ -233,28 +216,22 @@ function solveB(grid, { bestPathPoints, bestTrail }) {
   let uniqs = new Set();
   for (const trail in trails) {
     for (const c of trails[trail].split("|")) {
-      // const [coord] = c.split(",");
       if (c === "") continue;
-      // console.log(c);
       uniqs.add(c.split(",")[0]);
       bestPath.add(c);
     }
   }
 
-  // console.log({ trails, v });
   for (const [key, value] of v) {
     if (value.trails.size === 1 || !bestPath.has(key)) continue;
-    console.log({ key, vs: value.trails.size });
     for (const set of value.trails) {
       for (const c of set.split("|")) {
         if (c === "") continue;
         uniqs.add(c.split(",")[0]);
       }
     }
-    // console.log({ trailsLen: value.trails });
   }
 
-  // console.log(uniqs);
   console.log({ uniqSize: uniqs.size });
 
   for (const cs of uniqs) {
@@ -265,6 +242,7 @@ function solveB(grid, { bestPathPoints, bestTrail }) {
     const y = Math.floor(cn / grid[0].length);
     grid[y][x] = "O";
   }
+
   print(grid);
   return uniqs.size;
 }
@@ -284,6 +262,6 @@ async function solveAdventPuzzle() {
     y++;
   }
 
-  console.log({ part1: solve(grid), part2: solveB(grid, solve(grid)) });
+  console.log({ partA: solve(grid), partB: solveB(grid, solve(grid)) });
 }
 solveAdventPuzzle();
